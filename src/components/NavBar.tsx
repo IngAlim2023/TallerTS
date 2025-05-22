@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="flex items-center">
-            <span className="text-xl font-bold text-indigo-600">Biblioteca</span>
+            <span className="text-xl font-bold text-indigo-600">GestionEquipos</span>
           </div>
 
           {/* Enlaces */}
@@ -25,23 +25,23 @@ const Navbar: React.FC = () => {
                 onClick={() =>{ setDropdownOpen(!dropdownOpen); setDropdownOpenDos(false)}}
                 className="text-gray-700 hover:text-indigo-600 transition focus:outline-none"
               >
-                Editorial ▾
+                Equipos ▾
               </button>
               {dropdownOpen && (
                 <div className="absolute z-20 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                   <Link
-                    to="/editoriales"
+                    to="/equipos"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    Ver editoriales
+                    Ver equipos
                   </Link>
                   <Link
-                    to="/formularioEditorial"
+                    to="/formularioEquipos"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    Agregar editorial
+                    Agregar equipos
                   </Link>
                 </div>
               )}
@@ -52,23 +52,23 @@ const Navbar: React.FC = () => {
                 onClick={() => {setDropdownOpenDos(!dropdownOpenDos); setDropdownOpen(false)}}
                 className="text-gray-700 hover:text-indigo-600 transition focus:outline-none"
               >
-                Libros ▾
+                Presidentes ▾
               </button>
               {dropdownOpenDos && (
                 <div className="absolute z-20 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
                   <Link
-                    to="/libros"
+                    to="/presidentes"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setDropdownOpenDos(false)}
                   >
-                    Ver libros
+                    Ver presidentes
                   </Link>
                   <Link
-                    to="/formulariolibro"
+                    to="/formularioPresidentes"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setDropdownOpenDos(false)}
                   >
-                    Agregar libros
+                    Agregar presidentes
                   </Link>
                 </div>
               )}
