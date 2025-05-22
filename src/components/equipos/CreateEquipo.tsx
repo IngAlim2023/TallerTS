@@ -8,10 +8,18 @@ const CreateEquipo: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
   const [anio, setAnio] = useState<number>(0);
 
-  const handleSave = () => {
-    if (nombre.length < 3 || anio === 0)
+  const handleSave = async () => {
+    if (nombre.length < 3 || anio<1000) {
       return toast.error("Datos incorrectos");
-    toast.success("Vamos a guardar");
+    }
+    const datos = {
+      nombre: nombre,
+      anio_fundacion: anio  
+    }
+    if (params.id) {
+      return toast.success("Vamos a editar el equipo");
+    }
+    toast.success("Equipo guardado");
   };
 
   return (

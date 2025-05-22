@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
 interface InforEquipo {
@@ -8,7 +8,27 @@ interface InforEquipo {
 }
 
 const ListEquipos:React.FC = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [recargar, setRecargar] = useState<boolean>(false);
+
+    //Pasos para implementación de la API:
+  // const [data, setData] = useState<InforEquipo[]>([]);
+
+  /**
+   * 
+   useEffect(()=>{
+    try{
+      loadData();
+    }catch (e){
+    }
+   },[recargar])
+
+   const loadData = async () =>{
+    const res =await fetch(`http://localhost:3000/api/v1/presidente`);
+    response = await res.json();
+    setData(response) 
+   }
+   */
   const data = [
     {
       codigo: "1",
@@ -21,6 +41,10 @@ const ListEquipos:React.FC = () => {
       anio_fundacion: 2002,
     },
   ];
+
+  const handleDelete = async (cod:string) =>{
+    try{}catch(e){}
+  }
   return <div>
     {data.map(val =>(
         <div
@@ -40,6 +64,7 @@ const ListEquipos:React.FC = () => {
               Editar
             </button>
             <button className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition"
+            onClick={()=>handleDelete(val.codigo)}
             >
               Eliminar
             </button>
