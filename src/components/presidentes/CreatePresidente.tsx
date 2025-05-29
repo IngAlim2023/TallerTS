@@ -100,7 +100,7 @@ const CreatePresidente: React.FC = () => {
         </h1>
         <p className="text-sm text-gray-500">
           {params.id
-            ? "Modifica los campos necesarios."
+            ? `Modifica los campos necesarios de ${president[0]?.nombre}.`
             : "Completa la información para registrar un nuevo presidente."}
         </p>
       </div>
