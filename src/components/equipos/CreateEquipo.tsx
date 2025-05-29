@@ -7,19 +7,27 @@ const CreateEquipo: React.FC = () => {
   const params = useParams();
   const [nombre, setNombre] = useState<string>("");
   const [anio, setAnio] = useState<number>(0);
+  const [mensaje, setMensaje] = useState(``);
+  const [error, setError] = useState('');
 
-  const handleSave = async () => {
-    if (nombre.length < 3 || anio<1000) {
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (nombre.length < 3 || anio === 0) {
       return toast.error("Datos incorrectos");
     }
-    const datos = {
-      nombre: nombre,
-      anio_fundacion: anio  
+    toast.success("Vamos a guardar");
+    setError("");
+    try {
+      const respuesta = await fetch(`http://localhost:3333/insertarEquipo`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ nombre: nombre, anio_fundacion: anio })
+      });
+      const ms = await respuesta.json();
+      setMensaje(ms.mensaje);
+    } catch (err) {
+      setError("Error al guardar el equipo");
     }
-    if (params.id) {
-      return toast.success("Vamos a editar el equipo");
-    }
-    toast.success("Equipo guardado");
   };
 
   return (
@@ -34,6 +42,18 @@ const CreateEquipo: React.FC = () => {
             : "Completa la información para registrar un nuevo equipo."}
         </p>
       </div>
+
+      {mensaje && (
+        <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-2">
+          {mensaje}
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-100 text-red-800 px-4 py-2 rounded mb-2">
+          {error}
+        </div>
+      )}
 
       <div className="space-y-4">
         <div>
@@ -55,7 +75,8 @@ const CreateEquipo: React.FC = () => {
           </label>
           <input
             type="number"
-            onChange={(e) => setAnio(parseInt(e.target.value))}
+            value={anio === 0 ? "" : anio}
+            onChange={(e) => setAnio(parseInt(e.target.value) || 0)}
             placeholder="Ej: 2008"
             className="w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
           />
