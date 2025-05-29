@@ -11,7 +11,6 @@ const ListEquipos: React.FC = () => {
   const [equipos, setEquipos] = useState<InforEquipo[]>([])
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [codigo, setCodigo] = useState<number>(0);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -64,7 +63,7 @@ const ListEquipos: React.FC = () => {
 
         <div className="flex space-x-2">
           <button
-            className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 transition"
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-yellow-600 transition"
             onClick={() => navigate(`/formularioEquipos/${val.codigo}`)}
           >
             Editar
