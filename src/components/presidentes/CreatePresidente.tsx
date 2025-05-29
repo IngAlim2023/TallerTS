@@ -70,7 +70,7 @@ const CreatePresidente: React.FC = () => {
       codigo_equipo: codEquipo,
     };
     if (params.id) {
-      const res = await fetch(
+      await fetch(
         `http://localhost:3333/actualizarPresidenteId/${params.id}`,
         {
           method: "PUT",
@@ -78,7 +78,6 @@ const CreatePresidente: React.FC = () => {
           body: JSON.stringify(datos),
         }
       );
-      const resp = await res.json();
       navigate("/presidentes");
 
       return toast.success("Presidente editado");
