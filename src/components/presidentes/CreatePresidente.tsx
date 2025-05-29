@@ -11,6 +11,12 @@ interface InforPresidente {
 }
 
 interface SelectEquipo {
+  codigo?: any;
+  nombre?: string;
+  anio_fundacion?: string;
+}
+
+interface SelectEquipo {
   value?: any;
   label?: string;
 }
@@ -21,19 +27,36 @@ const CreatePresidente: React.FC = () => {
   const [nombre, setNombre] = useState<string>("");
   const [dni, setDni] = useState<string>("");
   const [codEquipo, setCodEquipo] = useState<number>(0);
-  const [data, setData] = useState<InforPresidente[]>([]);
+  const [data, setData] = useState<SelectEquipo[]>([]);
+  const [president, setPresident] = useState<InforPresidente[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
-      const res = await fetch(`http://localhost:3333/listarequipo`);
+      const res = await fetch(`http://localhost:3333/listarequipo/SP`);
       const response = await res.json();
       setData(response.ms);
+      if (params.id) {
+        const { id } = params;
+        try {
+          const resp = await fetch(
+            `http://localhost:3333/obtenerPresidente/${id}`
+          );
+          const respon = await resp.json();
+          setPresident(respon.ms);
+          setNombre(respon.ms[0].nombre);
+          setDni(respon.ms[0].dni);
+          setCodEquipo(respon.ms[0].codigo_equipo);
+        } catch (e) {
+          navigate(-1);
+          toast.error("Por el momento no está disponible esta opción.");
+        }
+      }
     };
     loadData();
   }, []);
 
   const options: SelectEquipo[] = data.map((val) => ({
-    value: val.id,
+    value: val.codigo,
     label: val.nombre,
   }));
 
@@ -47,7 +70,6 @@ const CreatePresidente: React.FC = () => {
       codigo_equipo: codEquipo,
     };
     if (params.id) {
-      
       const res = await fetch(
         `http://localhost:3333/actualizarPresidenteId/${params.id}`,
         {
@@ -56,9 +78,8 @@ const CreatePresidente: React.FC = () => {
           body: JSON.stringify(datos),
         }
       );
-       const resp = await res.json()
-       console.log(resp)
-      //navigate("/presidentes");
+      const resp = await res.json();
+      navigate("/presidentes");
 
       return toast.success("Presidente editado");
     }
@@ -104,6 +125,7 @@ const CreatePresidente: React.FC = () => {
           </label>
           <input
             type="text"
+            value={dni}
             onChange={(e) => setDni(e.target.value)}
             className="w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
           />
@@ -116,6 +138,11 @@ const CreatePresidente: React.FC = () => {
             options={options}
             onChange={(e) => setCodEquipo(parseInt(e?.value))}
           />
+          {params.id && (
+            <label className="block text-xs font-medium text-cyan-700 mb-1">
+              Este campo es opcional
+            </label>
+          )}
         </div>
 
         <div className="flex justify-between pt-4">
