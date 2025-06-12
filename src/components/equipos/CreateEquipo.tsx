@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -10,23 +10,50 @@ const CreateEquipo: React.FC = () => {
   const [mensaje, setMensaje] = useState(``);
   const [error, setError] = useState('');
 
+  // Cargar datos si hay codigo
+  useEffect(() => {
+    if (params.codigo) {
+      fetch(`http://localhost:3333/listarequipoid/${params.codigo}`)
+        .then(res => {
+          if (!res.ok) throw new Error("No se pudo cargar el equipo");
+          return res.json();
+        })
+        .then(data => {
+          setNombre(data.ms.nombre);
+          setAnio(data.ms.anio_fundacion);
+        })
+        .catch(() => setError("Error al cargar el equipo"));
+    }
+  }, [params.codigo]);
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (nombre.length < 3 || anio === 0) {
       return toast.error("Datos incorrectos");
     }
-    toast.success("Vamos a guardar");
+    toast.success(params.codigo ? "Actualizando..." : "Vamos a guardar");
     setError("");
     try {
-      const respuesta = await fetch(`http://localhost:3333/insertarEquipo`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ nombre: nombre, anio_fundacion: anio })
-      });
+      let respuesta;
+      if (params.codigo) {
+        // Actualizar equipo existente
+        respuesta = await fetch(`http://localhost:3333/actualizarEquipoId/${params.codigo}`, {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ nombre: nombre, anio_fundacion: anio })
+        });
+      } else {
+        // Crear nuevo equipo
+        respuesta = await fetch(`http://localhost:3333/insertarEquipo`, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ nombre: nombre, anio_fundacion: anio })
+        });
+      }
       const ms = await respuesta.json();
       setMensaje(ms.mensaje);
     } catch (err) {
-      setError("Error al guardar el equipo");
+      setError(params.codigo ? "Error al actualizar el equipo" : "Error al guardar el equipo");
     }
   };
 
@@ -34,10 +61,10 @@ const CreateEquipo: React.FC = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-800 mb-1">
-          {params.id ? "Editar Equipo" : "Crear Equipo"}
+          {params.codigo ? "Editar Equipo" : "Crear Equipo"}
         </h1>
         <p className="text-sm text-gray-500">
-          {params.id
+          {params.codigo
             ? "Modifica los campos necesarios."
             : "Completa la información para registrar un nuevo equipo."}
         </p>
@@ -95,7 +122,7 @@ const CreateEquipo: React.FC = () => {
             onClick={handleSave}
             className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700 transition"
           >
-            {params.id ? "Actualizar" : "Agregar"}
+            {params.codigo ? "Actualizar" : "Agregar"}
           </button>
         </div>
       </div>
