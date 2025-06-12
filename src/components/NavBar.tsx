@@ -1,28 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Navbar: React.FC = () => {
+interface propsNav {
+  setIsAuth: (val: boolean) => void;
+  setLog: (val: boolean) => void;
+}
+
+const Navbar: React.FC<propsNav> = ({setIsAuth, setLog}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-    const [dropdownOpenDos, setDropdownOpenDos] = useState(false);
+  const [dropdownOpenDos, setDropdownOpenDos] = useState(false);
+  const navigate = useNavigate();
   return (
     <nav className="bg-white shadow-md relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="flex items-center">
-            <span className="text-xl font-bold text-indigo-600">GestionEquipos</span>
+            <span className="text-xl font-bold text-indigo-600">
+              GestionEquipos
+            </span>
           </div>
 
           {/* Enlaces */}
           <div className="hidden md:flex items-center space-x-6 relative">
-            <Link to="/" className="text-gray-700 hover:text-indigo-600 transition">
+            <Link
+              to="/"
+              className="text-gray-700 hover:text-indigo-600 transition"
+            >
               Inicio
             </Link>
 
             {/* Dropdown Editorial */}
             <div className="relative">
               <button
-                onClick={() =>{ setDropdownOpen(!dropdownOpen); setDropdownOpenDos(false)}}
+                onClick={() => {
+                  setDropdownOpen(!dropdownOpen);
+                  setDropdownOpenDos(false);
+                }}
                 className="text-gray-700 hover:text-indigo-600 transition focus:outline-none"
               >
                 Equipos ▾
@@ -49,7 +63,10 @@ const Navbar: React.FC = () => {
             {/* Dropdown libros */}
             <div className="relative">
               <button
-                onClick={() => {setDropdownOpenDos(!dropdownOpenDos); setDropdownOpen(false)}}
+                onClick={() => {
+                  setDropdownOpenDos(!dropdownOpenDos);
+                  setDropdownOpen(false);
+                }}
                 className="text-gray-700 hover:text-indigo-600 transition focus:outline-none"
               >
                 Presidentes ▾
@@ -73,23 +90,38 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
-
           </div>
 
           {/* Botón acción */}
           <div className="hidden md:flex items-center">
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition">
-              Ingresar
+            <button
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+              onClick={() => {
+                localStorage.clear();
+                setIsAuth(false);
+                setLog(false);
+                navigate("/");
+              }}
+            >
+              Salir
             </button>
           </div>
 
           {/* Menú móvil (puedes implementar hamburguesa más adelante) */}
           <div className="md:hidden flex items-center">
             <button className="text-gray-700 hover:text-indigo-600 focus:outline-none">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2"
-                viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
           </div>
