@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 
-interface propsRegister{
+interface propsRegister {
   isAuth: boolean;
-  setLog: (value:boolean)=> void;
-  setIsAuth: (value:boolean) => void;
+  setLog: (value: boolean) => void;
+  setIsAuth: (value: boolean) => void;
 }
 
-const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
-
+const Register: React.FC<propsRegister> = ({ isAuth, setLog, setIsAuth }) => {
   const navigate = useNavigate();
 
   //Datos del usuario a registrar:
@@ -17,35 +16,38 @@ const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordT, setPasswordT] = useState<string>("");
+  const [nombre, setNombre] = useState<string>("");
+  const [telefono, setTelefono] = useState<string>("");
+  const [direccion, setDireccion] = useState<string>("");
   //Vefificador si existe el correo:
   const [mailExist, setMailExist] = useState<boolean>(false);
 
   //Validación para saber si el correo ya se encuentra registrado:
-  useEffect(()=>{
-    const correoExist = async ( ) =>{
-      try{
+  useEffect(() => {
+    const correoExist = async () => {
+      try {
         const respuesta = await fetch(`http://localhost:3333/userByEmail`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({email}),
+          body: JSON.stringify({ email }),
         });
-        const res = await respuesta.json()
+        const res = await respuesta.json();
         setMailExist(res.ms);
-      } catch (e){
-        setMailExist(true)
-        toast.error("No se logro verificar el correo")
+      } catch (e) {
+        setMailExist(true);
+        toast.error("No se logro verificar el correo");
       }
-    }
+    };
     correoExist();
-  },[email])
+  }, [email]);
 
   //Manejamos el Save del usuariio:
 
   const handleSave = async () => {
-    if(mailExist){
-      return toast.error("No puedes resgistrarte, el correo ya esta es uso.")
+    if (mailExist) {
+      return toast.error("No puedes resgistrarte, el correo ya esta es uso.");
     }
-    if (password.length < 8 || email.length < 9) {
+    if (password.length < 4 || email.length < 9 || nombre.length<2 ||telefono.length<10 || direccion.length <5) {
       return toast.error("La longitud de los campos debe ser mayor");
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,22 +90,24 @@ const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
       const respuesta = await fetch(`http://localhost:3333/register`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, nombre, telefono, direccion }),
       });
       const ms = await respuesta.json();
-      if(ms.ms === "agregado"){
-        localStorage.setItem('auth','true');
+      if (ms.ms === "agregado") {
+        localStorage.setItem("auth", "true");
         setLog(true);
         setIsAuth(true);
-        navigate('/home');
-        return
+        navigate("/home");
+        return;
       }
     } catch (e) {
       return toast.error("El registro no fue posible, intenta más tarde");
     }
   };
 
-  return isAuth ? (<Navigate to="/home"/>):( 
+  return isAuth ? (
+    <Navigate to="/home" />
+  ) : (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-md space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-800 mb-1">Registrarme</h1>
@@ -118,17 +122,53 @@ const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
       >
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nombre
+          </label>
+          <input
+            type="text"
+            className="w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            telefono
+          </label>
+          <input
+            type="text"
+            className="w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
+            onChange={(e) => setTelefono(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Dirección
+          </label>
+          <input
+            type="text"
+            className="w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500 focus:outline-none transition"
+            onChange={(e) => setDireccion(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Email
           </label>
           <input
             type="email"
-            className={`w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus: ${mailExist ? 'ring-red-600' : 'ring-indigo-500'} focus:outline-none transition`}
-
-            onChange={(e) => {setEmail(e.target.value); setMailExist(false)}}
+            className={`w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus: ${
+              mailExist ? "ring-red-600" : "ring-indigo-500"
+            } focus:outline-none transition`}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setMailExist(false);
+            }}
           />
-          {mailExist && (<div className="text-red-600 font-semibold">
-            El email ya esta en uso, intenta con otro.
-          </div>)}
+          {mailExist && (
+            <div className="text-red-600 font-semibold">
+              El email ya esta en uso, intenta con otro.
+            </div>
+          )}
         </div>
 
         <div>
