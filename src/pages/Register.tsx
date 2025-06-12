@@ -23,13 +23,18 @@ const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
   //Validación para saber si el correo ya se encuentra registrado:
   useEffect(()=>{
     const correoExist = async ( ) =>{
-      const respuesta = await fetch(`http://localhost:3333/userByEmail`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({email}),
-      });
-      const res = await respuesta.json()
-      setMailExist(res.ms);
+      try{
+        const respuesta = await fetch(`http://localhost:3333/userByEmail`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({email}),
+        });
+        const res = await respuesta.json()
+        setMailExist(res.ms);
+      } catch (e){
+        setMailExist(true)
+        toast.error("No se logro verificar el correo")
+      }
     }
     correoExist();
   },[email])
@@ -119,7 +124,7 @@ const Register: React.FC<propsRegister> = ({isAuth, setLog, setIsAuth}) => {
             type="email"
             className={`w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-gray-900 shadow-sm placeholder-gray-400 focus:border-indigo-500 focus:ring-2 focus: ${mailExist ? 'ring-red-600' : 'ring-indigo-500'} focus:outline-none transition`}
 
-            onChange={(e) => {setEmail(e.target.value)}}
+            onChange={(e) => {setEmail(e.target.value); setMailExist(false)}}
           />
           {mailExist && (<div className="text-red-600 font-semibold">
             El email ya esta en uso, intenta con otro.
