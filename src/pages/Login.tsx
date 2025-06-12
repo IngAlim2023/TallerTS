@@ -25,13 +25,15 @@ const Login: React.FC<LoginProps> = ({ setIsAuth, setLog, isAuth }) => {
         body: JSON.stringify({ email, password }),
       });
       const ms = await respuesta.json();
-      if(ms.ms){
+      console.log(ms.ms)
+      if(ms.ms === true){
         localStorage.setItem('auth','true');
         setLog(true);
         setIsAuth(true);
         navigate('/home');
         return
       }
+      return toast.error("Error en las credenciales")
     } catch (e) {
       return toast.error("No se logro iniciar sesión intenta más tarde");
     }
