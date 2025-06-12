@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 interface propsNav {
@@ -6,10 +6,36 @@ interface propsNav {
   setLog: (val: boolean) => void;
 }
 
-const Navbar: React.FC<propsNav> = ({setIsAuth, setLog}) => {
+interface datosUser {
+  created_at: string;
+  direccion: string;
+  email: string;
+  id: number;
+  nombre: string;
+  telefono: string;
+}
+
+const Navbar: React.FC<propsNav> = ({ setIsAuth, setLog }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownOpenDos, setDropdownOpenDos] = useState(false);
   const navigate = useNavigate();
+
+  //Información del usuario al ingresar
+  const [user, setUser] = useState<datosUser[]>([]);
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    const loadUser = async () => {
+      const respuesta = await fetch(`http://localhost:3333/email`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const ms = await respuesta.json();
+      setUser(ms.ms);
+    };
+    loadUser();
+  }, []);
+
   return (
     <nav className="bg-white shadow-md relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -94,6 +120,9 @@ const Navbar: React.FC<propsNav> = ({setIsAuth, setLog}) => {
 
           {/* Botón acción */}
           <div className="hidden md:flex items-center">
+            {user[0]?.nombre && (
+              <span className="text-gray-700 mr-4">Hola, {user[0].nombre}</span>
+            )}
             <button
               className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
               onClick={() => {

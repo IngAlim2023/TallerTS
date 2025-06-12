@@ -25,9 +25,9 @@ const Login: React.FC<LoginProps> = ({ setIsAuth, setLog, isAuth }) => {
         body: JSON.stringify({ email, password }),
       });
       const ms = await respuesta.json();
-      console.log(ms.ms)
       if(ms.ms === true){
         localStorage.setItem('auth','true');
+        localStorage.setItem("email", email);
         setLog(true);
         setIsAuth(true);
         navigate('/home');

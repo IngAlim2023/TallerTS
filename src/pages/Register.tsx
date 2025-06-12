@@ -95,6 +95,7 @@ const Register: React.FC<propsRegister> = ({ isAuth, setLog, setIsAuth }) => {
       const ms = await respuesta.json();
       if (ms.ms === "agregado") {
         localStorage.setItem("auth", "true");
+        localStorage.setItem("email", email);
         setLog(true);
         setIsAuth(true);
         navigate("/home");
